@@ -18,6 +18,6 @@ jobs:
         with:
           WPE_SSHG_KEY_PRIVATE: ${{ secrets.WPE_SSHG_KEY_PRIVATE }}
           WPE_ENV: aimegroup
-          SRC_PATH: fuse-registration-plugin/fuse-registration/
+          SRC_PATH: AIME-Creative/fuseRegistration
           REMOTE_PATH: wp-content/plugins/fuse-registration/
           FLAGS: --exclude=".git/" --exclude=".github/" --exclude="*.zip"
