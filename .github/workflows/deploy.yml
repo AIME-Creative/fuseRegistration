@@ -20,4 +20,4 @@ jobs:
           WPE_ENV: aimegroup
           SRC_PATH: "."
           REMOTE_PATH: wp-content/plugins/fuse-registration/
-          FLAGS: -v --checksum --exclude=".git/" --exclude=".github/" --exclude="*.zip"
+          FLAGS: -rv --checksum --exclude=".git/" --exclude=".github/" --exclude="*.zip"
