@@ -16,22 +16,8 @@ jobs:
       - name: Deploy to WP Engine
         uses: wpengine/github-action-wpe-site-deploy@v3
         with:
-          # SSH private key stored as a GitHub secret
           WPE_SSHG_KEY_PRIVATE: ${{ secrets.WPE_SSHG_KEY_PRIVATE }}
-
-          # Your WP Engine environment name (the "Install Name" shown in the WP Engine portal)
-          # Example: if your site URL is mysite.wpengine.com, use "mysite"
           WPE_ENV: aimegroup
-
-          # Path inside your GitHub repo to the plugin folder
           SRC_PATH: fuse-registration-plugin/fuse-registration/
-
-          # Destination on WP Engine, relative to the WordPress root
           REMOTE_PATH: wp-content/plugins/fuse-registration/
-
-          # Don't delete files in the destination that aren't in the source
-          # Set to true only if you want to do a clean sync
-          REMOTE_CLEARWPE: 0
-
-          # Optional: exclude files that shouldn't be deployed
-          EXCLUDES: ".git/ .github/ *.zip *.md"
+          FLAGS: --exclude=".git/" --exclude=".github/" --exclude="*.zip"
