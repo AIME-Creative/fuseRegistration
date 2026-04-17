@@ -1238,6 +1238,8 @@
                     nonce: this.config.nonce,
                     registration_id: this.state.invoiceData.registrationId,
                     email: email,
+                    first_name: (reg && reg.first_name) || $('#add-first_name').val() || $('#edit-first_name').val() || '',
+                    last_name:  (reg && reg.last_name)  || $('#add-last_name').val()  || $('#edit-last_name').val()  || '',
                     line_items: JSON.stringify(lineItems)
                 },
                 success: function(response) {

@@ -557,6 +557,52 @@ class Fuse_Stripe_API {
     /**
      * Create a Stripe Checkout session
      */
+    /**
+     * Find an existing Stripe customer by email, or create one if none exists.
+     * Returns the customer ID string on success, or null on failure.
+     */
+    public static function find_or_create_customer($email, $name = '') {
+        $sk      = self::get_secret_key();
+        $headers = [
+            'Authorization' => 'Basic ' . base64_encode($sk . ':'),
+            'Content-Type'  => 'application/x-www-form-urlencoded',
+        ];
+
+        // Search for existing customer
+        $search = wp_remote_get(
+            'https://api.stripe.com/v1/customers?email=' . urlencode($email) . '&limit=1',
+            ['headers' => $headers, 'timeout' => 15]
+        );
+        if (!is_wp_error($search)) {
+            $body = json_decode(wp_remote_retrieve_body($search), true);
+            if (!empty($body['data'][0]['id'])) {
+                error_log('[Fuse Stripe] Reusing existing customer ' . $body['data'][0]['id'] . ' for ' . $email);
+                return $body['data'][0]['id'];
+            }
+        }
+
+        // No existing customer — create one
+        $create_body = ['email' => $email, 'metadata[source]' => 'fuse_2026_registration'];
+        if (!empty($name)) $create_body['name'] = $name;
+
+        $create = wp_remote_post('https://api.stripe.com/v1/customers', [
+            'headers' => $headers,
+            'body'    => $create_body,
+            'timeout' => 15,
+        ]);
+        if (is_wp_error($create)) {
+            error_log('[Fuse Stripe] Customer create network error: ' . $create->get_error_message());
+            return null;
+        }
+        $customer = json_decode(wp_remote_retrieve_body($create), true);
+        if (empty($customer['id'])) {
+            error_log('[Fuse Stripe] Customer create failed: ' . ($customer['error']['message'] ?? 'unknown'));
+            return null;
+        }
+        error_log('[Fuse Stripe] Created new customer ' . $customer['id'] . ' for ' . $email);
+        return $customer['id'];
+    }
+
     public static function create_checkout_session($params) {
         $response = wp_remote_post('https://api.stripe.com/v1/checkout/sessions', [
             'timeout' => 30,
@@ -579,7 +625,7 @@ class Fuse_Stripe_API {
     /**
      * Create a Stripe Invoice for manual registrations
      */
-    public static function create_invoice($customer_email, $line_items, $metadata = []) {
+    public static function create_invoice($customer_email, $line_items, $metadata = [], $customer_name = '') {
         $sk = self::get_secret_key();
         $headers = [
             'Authorization' => 'Basic ' . base64_encode($sk . ':'),
@@ -596,17 +642,13 @@ class Fuse_Stripe_API {
             return json_decode(wp_remote_retrieve_body($r), true) ?: [];
         };
 
-        // 1. Create or find customer
-        $customer = $stripe_post('https://api.stripe.com/v1/customers', [
-            'email'             => $customer_email,
-            'metadata[source]'  => 'fuse_2026_registration',
-        ]);
-        if (!empty($customer['wp_error'])) return ['error' => 'Network error creating customer: ' . $customer['wp_error']];
-        if (!isset($customer['id'])) {
-            $msg = $customer['error']['message'] ?? 'unknown error';
-            error_log('Fuse Invoice: customer creation failed — ' . $msg);
-            return ['error' => 'Could not create Stripe customer: ' . $msg];
+        // 1. Find existing customer or create new one (prevents duplicate customer objects)
+        $customer_id = self::find_or_create_customer($customer_email, $customer_name);
+        if (!$customer_id) {
+            error_log('Fuse Invoice: could not find or create Stripe customer for ' . $customer_email);
+            return ['error' => 'Could not find or create Stripe customer.'];
         }
+        $customer = ['id' => $customer_id];
 
         // 2. Create pending invoice items BEFORE the invoice so Stripe can collect them
         $items_added    = 0;
@@ -1082,7 +1124,7 @@ class Fuse_Registration_Ajax {
                 'source'               => 'fuse_free_registration',
                 'ticket_type'          => $reg_meta['ticket_type'] ?? '',
                 'tier'                 => $reg_meta['tier'] ?? '',
-            ]);
+            ], $full_name);
             if (isset($invoice_result['error'])) {
                 error_log('[Fuse create_checkout] $0 invoice creation failed (non-fatal): ' . $invoice_result['error']);
             } else {
@@ -1098,13 +1140,26 @@ class Fuse_Registration_Ajax {
         $success_url = home_url('/fuse/registration-success/') . '?session_id={CHECKOUT_SESSION_ID}';
         $cancel_url  = home_url('/fuse/register/');
 
+        // Look up or create Stripe customer so returning attendees aren't duplicated
+        $first_name  = sanitize_text_field($_POST['first_name'] ?? '');
+        $last_name   = sanitize_text_field($_POST['last_name']  ?? '');
+        $full_name   = trim("$first_name $last_name");
+        $customer_id = Fuse_Stripe_API::find_or_create_customer($email, $full_name);
+
         $params = [
             'mode'                      => 'payment',
-            'customer_email'            => $email,
             'success_url'               => $success_url,
             'cancel_url'                => $cancel_url,
             'invoice_creation[enabled]' => 'true',
         ];
+
+        // Attach to existing/new customer (prevents duplicate customer objects)
+        if ($customer_id) {
+            $params['customer'] = $customer_id;
+        } else {
+            // Fallback: pass email and let Stripe create the customer
+            $params['customer_email'] = $email;
+        }
 
         // Build line items — skip $0 items that have no configured Stripe Price ID
         $item_index = 0;
@@ -1346,6 +1401,7 @@ class Fuse_Registration_Ajax {
         $reg_id     = sanitize_text_field($_POST['registration_id'] ?? '');
         $items_json = stripslashes($_POST['line_items'] ?? '[]');
         $line_items = json_decode($items_json, true);
+        $inv_name   = trim(sanitize_text_field($_POST['first_name'] ?? '') . ' ' . sanitize_text_field($_POST['last_name'] ?? ''));
 
         if (empty($email) || empty($line_items)) {
             wp_send_json_error(['message' => 'Email and at least one line item required.']);
@@ -1354,7 +1410,7 @@ class Fuse_Registration_Ajax {
         $result = Fuse_Stripe_API::create_invoice($email, $line_items, [
             'fuse_registration_id' => $reg_id,
             'source'               => 'fuse_admin',
-        ]);
+        ], $inv_name);
 
         if (isset($result['error'])) {
             wp_send_json_error(['message' => $result['error']]);
