@@ -9,7 +9,7 @@
 
 if (!defined('ABSPATH')) exit;
 
-define('FUSE_REG_VERSION', '2.5.0');
+define('FUSE_REG_VERSION', '2.5.1');
 define('FUSE_REG_PATH', plugin_dir_path(__FILE__));
 define('FUSE_REG_URL', plugin_dir_url(__FILE__));
 
