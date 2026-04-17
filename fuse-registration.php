@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Fuse 2026 Registration
  * Description: Conference registration system for AIME Fuse 2026 with Supabase member verification, Stripe payments, and admin management.
- * Version: 2.5.0
+ * Version: 2.5.1
  * Author: AIME Group
  * Text Domain: fuse-registration
  */
