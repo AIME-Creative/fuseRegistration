@@ -475,7 +475,7 @@ class Fuse_Supabase_API {
     public static function get_stats() {
         $event_id = get_option('fuse_event_id', '');
         $base = !empty($event_id) ? 'fuse_registrations?fuse_event_id=eq.' . $event_id . '&' : 'fuse_registrations?';
-        $regs = self::request($base . 'select=id,ticket_type,tier,purchase_type,has_hall_of_aime,has_wmn_at_fuse');
+        $regs = self::request($base . 'select=id,ticket_type,tier,purchase_type,has_hall_of_aime,has_wmn_at_fuse,has_vip_luncheon,has_vetted_va');
 
         if (isset($regs['error'])) return $regs;
 
