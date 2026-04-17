@@ -1,0 +1,1250 @@
+/**
+ * Fuse 2026 Registration - Frontend Styles
+ * Rustic western / parchment aesthetic
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Rye&family=Lato:wght@400;500;600;700&display=swap');
+
+/* ============================================
+   CSS Variables
+   ============================================ */
+
+:root {
+  --fuse-brown-dark:    #2c1810;
+  --fuse-brown-mid:     #4a2c1a;
+  --fuse-brown-accent:  #6b3a22;
+  --fuse-tan:           #c9a87c;
+  --fuse-tan-light:     #d9bb96;
+  --fuse-tan-lighter:   #e8d0b0;
+  --fuse-parchment:     #f5eed8;
+  --fuse-cream:         #fdf6e3;
+  --fuse-cream-input:   #faf4e8;
+  --fuse-text-dark:     #2c1810;
+  --fuse-text-mid:      #5a3820;
+  --fuse-text-muted:    #8a6848;
+  --fuse-border:        #b8905a;
+  --fuse-border-light:  #d4b896;
+  --fuse-success:       #4a7c3f;
+  --fuse-success-light: rgba(74,124,63,0.15);
+  --fuse-error:         #a0302a;
+  --fuse-orange:        #c0581a;
+  --fuse-orange-hover:  #a04510;
+  --fuse-shadow:        rgba(44,24,16,0.18);
+  --fuse-shadow-heavy:  rgba(44,24,16,0.35);
+}
+
+/* ============================================
+   Base Styles
+   ============================================ */
+
+.fuse-reg-wrapper {
+  font-family: 'Lato', sans-serif;
+  color: var(--fuse-text-dark);
+}
+
+/* ============================================
+   Progress Bar / Step Indicator
+   ============================================ */
+
+.fuse-progress-bar {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 0;
+  margin-bottom: 36px;
+  padding: 0;
+  position: relative;
+}
+
+/* Connecting line between steps */
+.fuse-progress-bar::before {
+  content: '';
+  position: absolute;
+  top: 16px;
+  left: calc(50% / 3 + 16px);
+  right: calc(50% / 3 + 16px);
+  height: 2px;
+  background-color: var(--fuse-border-light);
+  z-index: 0;
+}
+
+.fuse-progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  position: relative;
+  z-index: 1;
+  cursor: default;
+}
+
+.fuse-progress-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--fuse-tan-light);
+  border: 2px solid var(--fuse-border);
+  color: var(--fuse-text-mid);
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.fuse-progress-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(253,246,227,0.55); /* cream at 55% — visible on dark bg but not active */
+  text-align: center;
+}
+
+/* Active step — white circle so it reads clearly against the dark page background */
+.fuse-progress-step--active .fuse-progress-number {
+  background-color: var(--fuse-cream);
+  border-color: var(--fuse-brown-dark);
+  color: var(--fuse-brown-dark);
+  box-shadow: 0 2px 8px var(--fuse-shadow-heavy);
+  font-weight: 900;
+}
+
+.fuse-progress-step--active .fuse-progress-label {
+  color: var(--fuse-cream);
+  font-weight: 700;
+}
+
+/* Completed step */
+.fuse-progress-step--completed .fuse-progress-number {
+  background-color: var(--fuse-success) !important;
+  border-color: var(--fuse-success) !important;
+  color: #fff !important;
+  font-size: 0;
+  position: relative;
+}
+
+.fuse-progress-step--completed .fuse-progress-number::after {
+  content: '✓';
+  font-size: 14px;
+  color: #fff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.fuse-progress-step--completed .fuse-progress-label {
+  color: var(--fuse-success);
+}
+
+.fuse-progress-step--clickable {
+  cursor: pointer;
+}
+
+.fuse-progress-step--clickable:hover .fuse-progress-number {
+  opacity: 0.85;
+}
+
+/* ============================================
+   Form Wrapper & Steps
+   ============================================ */
+
+.fuse-reg-wrapper {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 32px 20px 48px;
+}
+
+.fuse-reg-form {
+  background: var(--fuse-parchment);
+  border-radius: 12px;
+  border: 1px solid var(--fuse-border);
+  box-shadow: 0 6px 30px var(--fuse-shadow-heavy);
+  overflow: hidden;
+}
+
+.fuse-reg-step {
+  display: none;
+  animation: fuseStepFadeIn 0.3s ease;
+}
+
+.fuse-reg-step--active {
+  display: block;
+}
+
+@keyframes fuseStepFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Step content + sidebar layout */
+.fuse-reg-step-content {
+  padding: 32px 32px 24px;
+}
+
+/* ============================================
+   Section & Step Titles
+   ============================================ */
+
+.fuse-reg-step-title {
+  font-family: 'Lato', sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--fuse-brown-dark);
+  letter-spacing: 0.01em;
+  margin: 0 0 6px;
+  line-height: 1.25;
+}
+
+.fuse-reg-step-description {
+  font-size: 14px;
+  color: var(--fuse-text-muted);
+  margin: 0 0 24px;
+}
+
+.fuse-reg-wrapper h3,
+.fuse-ticket-section-title,
+.fuse-addons-section-title,
+.fuse-guest-section-title {
+  font-family: 'Lato', sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 800 !important;
+  color: var(--fuse-brown-dark) !important;
+  letter-spacing: 0.01em !important;
+  margin: 0 0 14px !important;
+  display: block;
+  line-height: 1.25;
+}
+
+.fuse-ticket-section {
+  margin-bottom: 28px;
+}
+
+.fuse-addons-section {
+  margin-bottom: 28px;
+}
+
+.fuse-guest-section {
+  margin-bottom: 28px;
+}
+
+.fuse-guest-section-note {
+  font-size: 13px;
+  color: var(--fuse-text-muted);
+  margin: -8px 0 14px;
+}
+
+/* ============================================
+   Form Row & Field Groups
+   ============================================ */
+
+.fuse-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 560px) {
+  .fuse-form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.fuse-field-group {
+  margin-bottom: 18px;
+}
+
+.fuse-field-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--fuse-text-mid);
+  margin-bottom: 6px;
+}
+
+.fuse-required {
+  color: var(--fuse-error);
+  font-weight: 700;
+}
+
+.fuse-field-input,
+.fuse-field-select {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--fuse-cream-input);
+  border: 1.5px solid #8a6040;   /* solid medium-dark brown, clearly not red */
+  border-radius: 6px;
+  color: var(--fuse-text-dark);
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.fuse-field-input::placeholder {
+  color: var(--fuse-text-muted);
+  opacity: 0.7;
+}
+
+.fuse-field-input:focus,
+.fuse-field-select:focus {
+  outline: none;
+  border-color: var(--fuse-brown-dark);
+  box-shadow: 0 0 0 3px rgba(44,24,16,0.14);
+  background: var(--fuse-cream);
+}
+
+/* Override browser/theme red invalid styling — the form uses novalidate + custom JS validation */
+.fuse-reg-wrapper input:invalid,
+.fuse-reg-wrapper input:required,
+.fuse-reg-wrapper select:invalid,
+.fuse-reg-wrapper select:required {
+  border-color: #8a6040 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.fuse-field-error {
+  font-size: 12px;
+  color: var(--fuse-error);
+  margin-top: 4px;
+  min-height: 16px;
+}
+
+/* Select arrow */
+.fuse-field-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234a2c1a' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+
+/* Checkbox field groups */
+.fuse-field-group--checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.fuse-field-checkbox {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  cursor: pointer;
+  accent-color: var(--fuse-brown-dark);
+}
+
+.fuse-field-label--inline {
+  font-size: 13px;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--fuse-text-mid);
+  cursor: pointer;
+  margin-bottom: 0;
+}
+
+/* ============================================
+   Ticket Card (full-width)
+   ============================================ */
+
+.fuse-ticket-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.fuse-ticket-card {
+  display: block;
+  cursor: pointer;
+  user-select: none;
+  background: var(--fuse-cream);
+  border: 2px solid var(--fuse-border-light);
+  border-radius: 8px;
+  padding: 18px 20px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+}
+
+.fuse-ticket-card:hover {
+  border-color: var(--fuse-brown-accent);
+}
+
+.fuse-ticket-card input[type='radio'] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Selected state */
+.fuse-ticket-card:has(input[type='radio']:checked),
+.fuse-ticket-card--selected {
+  border-color: var(--fuse-brown-dark);
+  background: var(--fuse-cream);
+  box-shadow: 0 2px 10px var(--fuse-shadow);
+}
+
+.fuse-ticket-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 6px;
+}
+
+.fuse-ticket-card__name {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--fuse-brown-dark) !important;
+}
+
+.fuse-ticket-card__price {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.fuse-ticket-card__price--free {
+  color: var(--fuse-success);
+}
+
+.fuse-ticket-card__price--paid {
+  color: var(--fuse-brown-accent);
+}
+
+.fuse-ticket-card__desc {
+  font-size: 13px;
+  color: var(--fuse-text-muted);
+  line-height: 1.5;
+}
+
+/* Radio indicator dot shown top-right of selected card */
+.fuse-ticket-card__radio {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--fuse-border);
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.fuse-ticket-card:has(input[type='radio']:checked) .fuse-ticket-card__radio,
+.fuse-ticket-card--selected .fuse-ticket-card__radio {
+  border-color: var(--fuse-brown-dark);
+  background: var(--fuse-brown-dark);
+  box-shadow: inset 0 0 0 4px var(--fuse-cream);
+}
+
+.fuse-ticket-card--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.fuse-ticket-card--disabled::after {
+  content: 'Coming Soon';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(245,238,216,0.75);
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--fuse-text-muted);
+  border-radius: 8px;
+}
+
+/* ============================================
+   Add-ons List
+   ============================================ */
+
+.fuse-addons-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fuse-addon-row,
+.fuse-addon-item {
+  display: flex;
+  align-items: center;
+  padding: 14px 16px;
+  background: var(--fuse-cream);
+  border: 2px solid var(--fuse-border-light);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  gap: 14px;
+}
+
+.fuse-addon-row:hover,
+.fuse-addon-item:hover {
+  border-color: var(--fuse-brown-accent);
+}
+
+/* Selected add-on */
+.fuse-addon-row:has(input:checked),
+.fuse-addon-item:has(input:checked) {
+  border-color: var(--fuse-brown-dark);
+  background: var(--fuse-cream);
+  box-shadow: 0 2px 8px var(--fuse-shadow);
+}
+
+/* Custom checkbox inside add-on rows */
+.fuse-addon-row input[type='checkbox'],
+.fuse-addon-item input[type='checkbox'] {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  cursor: pointer;
+  accent-color: var(--fuse-brown-dark);
+  border-radius: 4px;
+  margin: 0;
+  order: -1;
+}
+
+.fuse-addon-label {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.fuse-addon-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fuse-text-dark);
+}
+
+.fuse-addon-price {
+  font-size: 12px;
+  color: var(--fuse-text-muted);
+}
+
+.fuse-addon-price-right {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--fuse-brown-accent);
+  flex-shrink: 0;
+}
+
+/* ============================================
+   Guest Cards
+   ============================================ */
+
+#guest-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.fuse-guest-item {
+  background: var(--fuse-cream);
+  border: 2px solid var(--fuse-border-light);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Guest card header bar */
+.fuse-guest-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--fuse-tan-light);
+  border-bottom: 1px solid var(--fuse-border-light);
+}
+
+.fuse-guest-item-label {
+  font-family: 'Lato', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--fuse-brown-dark);
+  letter-spacing: 0.04em;
+}
+
+.fuse-guest-item-price {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--fuse-brown-accent);
+}
+
+.fuse-guest-item-body {
+  padding: 16px 16px 12px;
+}
+
+.fuse-guest-item-body .fuse-form-row {
+  gap: 12px;
+}
+
+.fuse-guest-item-body .fuse-field-group {
+  margin-bottom: 12px;
+}
+
+/* Remove button inside guest card */
+.fuse-guest-item-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 16px 12px;
+}
+
+/* Guest add-ons (HOA / WMN checkboxes inside each guest card) */
+.fuse-guest-addons {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--fuse-border-light);
+}
+
+.fuse-guest-addons-title {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  color: var(--fuse-text-muted) !important;
+  margin-bottom: 8px !important;
+}
+
+.fuse-guest-addon-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 8px 10px !important;
+  margin-bottom: 6px !important;
+  border: 1px solid var(--fuse-border-light) !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  transition: border-color 0.15s, background 0.15s !important;
+}
+
+.fuse-guest-addon-row:hover {
+  border-color: var(--fuse-brown-accent) !important;
+}
+
+.fuse-guest-addon-row:has(input:checked) {
+  border-color: var(--fuse-brown-dark) !important;
+  background: rgba(255,255,255,0.6) !important;
+}
+
+.fuse-guest-addon-row--included {
+  opacity: 0.7 !important;
+  cursor: default !important;
+}
+
+.fuse-guest-addon-row input[type='checkbox'] {
+  width: 16px !important;
+  height: 16px !important;
+  flex-shrink: 0 !important;
+  accent-color: var(--fuse-brown-dark) !important;
+}
+
+.fuse-guest-addon-name {
+  flex: 1 !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: var(--fuse-text-dark) !important;
+}
+
+.fuse-guest-addon-price {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: var(--fuse-brown-accent) !important;
+}
+
+.fuse-guest-addon-price--free {
+  color: var(--fuse-success, #2e7d32) !important;
+}
+
+/* Used by JS to hide addon rows/section — needs !important to beat display:flex above */
+.fuse-guest-addon-row--hidden,
+.fuse-guest-addons--hidden {
+  display: none !important;
+}
+
+/* ============================================
+   Step Action Buttons Row
+   ============================================ */
+
+.fuse-reg-step-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--fuse-border-light);
+  gap: 12px;
+}
+
+/* ============================================
+   Buttons
+   ============================================ */
+
+.fuse-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 28px;
+  border: none;
+  border-radius: 50px;
+  font-family: 'Lato', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+  line-height: 1;
+}
+
+.fuse-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Primary — dark brown pill */
+.fuse-btn--primary {
+  background: var(--fuse-brown-dark);
+  color: var(--fuse-cream);
+}
+
+.fuse-btn--primary:hover:not(:disabled) {
+  background: var(--fuse-brown-mid);
+  box-shadow: 0 4px 14px var(--fuse-shadow-heavy);
+  transform: translateY(-1px);
+  color: var(--fuse-cream);
+  text-decoration: none;
+}
+
+/* Secondary — outline */
+.fuse-btn--secondary {
+  background: transparent;
+  color: var(--fuse-brown-mid);
+  border: 2px solid var(--fuse-border);
+  padding: 9px 22px;
+}
+
+.fuse-btn--secondary:hover:not(:disabled) {
+  background: var(--fuse-tan-lighter);
+  border-color: var(--fuse-brown-mid);
+  color: var(--fuse-brown-dark);
+}
+
+/* Danger (remove guest) */
+.fuse-btn--danger {
+  background: transparent;
+  color: var(--fuse-error);
+  border: 1.5px solid var(--fuse-error);
+  padding: 6px 14px;
+  font-size: 11px;
+}
+
+.fuse-btn--danger:hover:not(:disabled) {
+  background: rgba(160,48,42,0.1);
+}
+
+/* Small variant */
+.fuse-btn--small {
+  padding: 7px 16px;
+  font-size: 11px;
+}
+
+/* Spinner inside button */
+.fuse-btn-spinner {
+  display: inline-flex;
+  align-items: center;
+}
+
+.fuse-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: fuseSpinBtn 0.7s linear infinite;
+}
+
+@keyframes fuseSpinBtn {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   Member Check (Step 1)
+   ============================================ */
+
+.fuse-member-check-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.fuse-member-check-result {
+  font-size: 14px;
+  color: var(--fuse-text-mid);
+  margin-top: 12px;
+}
+
+.fuse-check-another-link {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fuse-brown-accent);
+  text-decoration: none;
+  border: 1.5px solid var(--fuse-brown-accent);
+  border-radius: 50px;
+  padding: 9px 18px;
+  transition: background 0.2s, color 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.fuse-check-another-link:hover {
+  background: var(--fuse-brown-accent);
+  color: var(--fuse-cream);
+  text-decoration: none;
+}
+
+.fuse-email-verified {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--fuse-success) !important;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.fuse-verified-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  background: var(--fuse-success);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.fuse-warning-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--fuse-orange);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  margin-right: 6px;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.fuse-field-helper {
+  font-size: 12px;
+  color: var(--fuse-text-muted);
+  margin-top: 5px;
+}
+
+/* ============================================
+   Member Badges
+   ============================================ */
+
+.fuse-member-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.fuse-member-badge--premium {
+  background: rgba(33,150,243,0.15);
+  color: #1a6fa0;
+  border: 1px solid #1a6fa0;
+}
+
+.fuse-member-badge--elite {
+  background: rgba(107,58,34,0.12);
+  color: var(--fuse-brown-mid);
+  border: 1px solid var(--fuse-brown-mid);
+}
+
+.fuse-member-badge--vip {
+  background: rgba(192,88,26,0.12);
+  color: var(--fuse-orange);
+  border: 1px solid var(--fuse-orange);
+}
+
+/* ============================================
+   Order Summary
+   ============================================ */
+
+.fuse-order-summary {
+  background: var(--fuse-tan-lighter);
+  border-top: 1px solid var(--fuse-border-light);
+  padding: 24px 32px;
+}
+
+.fuse-summary-title {
+  font-family: 'Lato', sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--fuse-brown-dark);
+  letter-spacing: 0.05em;
+  margin: 0 0 14px;
+}
+
+.fuse-summary-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 12px;
+}
+
+.fuse-summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--fuse-border-light);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.fuse-summary-item:last-child {
+  border-bottom: none;
+}
+
+.fuse-summary-item--empty {
+  color: var(--fuse-text-muted);
+  font-style: italic;
+  justify-content: flex-start;
+  border-bottom: none;
+  font-size: 13px;
+}
+
+.fuse-summary-label {
+  color: var(--fuse-text-mid);
+  flex: 1;
+  min-width: 0;
+}
+
+.fuse-summary-price {
+  color: var(--fuse-brown-accent);
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.fuse-summary-price--free {
+  color: var(--fuse-success);
+}
+
+.fuse-summary-total {
+  border-top: 2px solid var(--fuse-border);
+  padding-top: 12px;
+  margin-top: 4px;
+}
+
+.fuse-summary-amount {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--fuse-text-dark);
+  display: flex;
+  justify-content: space-between;
+}
+
+.fuse-summary-amount .fuse-amount {
+  color: var(--fuse-brown-accent);
+  font-size: 18px;
+}
+
+.fuse-payment-note {
+  font-size: 12px;
+  color: var(--fuse-text-muted);
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+
+/* ============================================
+   Membership Upsell Nudge
+   ============================================ */
+
+.fuse-membership-nudge {
+  margin: 20px 0 0;
+  padding: 18px 20px;
+  background: var(--fuse-cream);
+  border: 2px solid var(--fuse-orange);
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.fuse-membership-nudge::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 14px,
+    rgba(192,88,26,0.04) 14px,
+    rgba(192,88,26,0.04) 15px
+  );
+  pointer-events: none;
+}
+
+.fuse-membership-nudge__eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fuse-orange);
+  margin-bottom: 8px;
+}
+
+.fuse-membership-nudge__headline {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--fuse-text-dark);
+  margin: 0 0 8px;
+  line-height: 1.4;
+}
+
+.fuse-membership-nudge__headline em {
+  font-style: normal;
+  color: var(--fuse-orange);
+}
+
+.fuse-membership-nudge__headline strong {
+  color: var(--fuse-brown-dark);
+}
+
+.fuse-membership-nudge__body {
+  font-size: 13px;
+  color: var(--fuse-text-mid);
+  margin: 0 0 14px;
+  line-height: 1.6;
+}
+
+.fuse-membership-nudge__body strong,
+.fuse-membership-nudge__body em {
+  color: var(--fuse-brown-dark);
+  font-style: normal;
+}
+
+.fuse-membership-nudge__cta {
+  display: inline-block;
+  padding: 9px 18px;
+  background: var(--fuse-brown-dark);
+  color: var(--fuse-cream) !important;
+  font-family: 'Lato', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  border-radius: 50px;
+  text-decoration: none !important;
+  transition: background 0.2s, transform 0.1s;
+  position: relative;
+}
+
+.fuse-membership-nudge__cta:hover {
+  background: var(--fuse-brown-mid);
+  transform: translateY(-1px);
+  text-decoration: none !important;
+  color: var(--fuse-cream) !important;
+}
+
+/* Compact variant in order summary sidebar */
+.fuse-membership-nudge--summary {
+  margin: 16px 0 0;
+  padding: 14px 16px;
+}
+
+.fuse-membership-nudge--summary .fuse-membership-nudge__headline {
+  font-size: 13px;
+}
+
+.fuse-membership-nudge--summary .fuse-membership-nudge__body {
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+.fuse-membership-nudge--summary .fuse-membership-nudge__cta {
+  font-size: 11px;
+  padding: 7px 14px;
+}
+
+/* ============================================
+   Confirmation Step
+   ============================================ */
+
+.fuse-confirmation-section {
+  margin-bottom: 24px;
+}
+
+.fuse-confirmation-title {
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--fuse-brown-mid);
+  letter-spacing: 0.04em;
+  margin: 0 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--fuse-border-light);
+}
+
+.fuse-confirmation-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fuse-confirmation-item {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.fuse-confirmation-label {
+  color: var(--fuse-text-muted);
+  flex-shrink: 0;
+  min-width: 110px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.fuse-confirmation-value {
+  color: var(--fuse-text-dark);
+  font-weight: 600;
+}
+
+/* ============================================
+   Form Notices & Errors
+   ============================================ */
+
+.fuse-form-notice {
+  margin-top: 16px;
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.fuse-form-notice.success {
+  background: var(--fuse-success-light);
+  border: 1px solid var(--fuse-success);
+  color: var(--fuse-success);
+}
+
+.fuse-form-notice.error {
+  background: rgba(160,48,42,0.1);
+  border: 1px solid var(--fuse-error);
+  color: var(--fuse-error);
+}
+
+/* ============================================
+   Success Screen
+   ============================================ */
+
+.fuse-reg-success {
+  text-align: center;
+  padding: 60px 32px;
+  background: var(--fuse-parchment);
+  border-radius: 12px;
+  border: 1px solid var(--fuse-border);
+}
+
+.fuse-success-content h2 {
+  font-family: 'Lato', sans-serif;
+  font-size: 26px;
+  font-weight: 400;
+  color: var(--fuse-brown-dark);
+  margin: 0 0 14px;
+}
+
+.fuse-success-content p {
+  font-size: 15px;
+  color: var(--fuse-text-mid);
+  margin: 0 0 24px;
+}
+
+/* ============================================
+   Loading Spinner (standalone)
+   ============================================ */
+
+.fuse-loading-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--fuse-border-light);
+  border-top-color: var(--fuse-brown-dark);
+  border-radius: 50%;
+  animation: fuseSpinBtn 0.8s linear infinite;
+  margin: 20px auto;
+}
+
+/* ============================================
+   Step 1 — Email Check specific
+   ============================================ */
+
+.fuse-reg-wrapper .fuse-reg-step[data-step="1"] .fuse-reg-step-content {
+  /* slightly more vertical padding on the first/only step of the member flow */
+  padding-top: 36px;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+
+@media (max-width: 600px) {
+  .fuse-reg-wrapper {
+    padding: 16px 12px 40px;
+  }
+
+  .fuse-reg-step-content {
+    padding: 24px 20px 20px;
+  }
+
+  .fuse-order-summary {
+    padding: 20px;
+  }
+
+  .fuse-reg-step-actions {
+    flex-wrap: wrap;
+  }
+
+  .fuse-btn {
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .fuse-progress-bar::before {
+    display: none;
+  }
+}
